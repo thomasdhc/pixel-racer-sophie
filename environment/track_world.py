@@ -101,11 +101,11 @@ class Track_Env():
 		return self.env, (reward + penalty), done
 
 
-def run():
+def run(filename):
 
 	fig = plt.figure()
 
-	action_list = np.loadtxt(RESULT_PATH + '/q_nn_actions_2.txt', dtype=int)
+	action_list = np.loadtxt(RESULT_PATH + '/' + filename, dtype=int)
 	run.num_action = 0
 	track_env = Track_Env(11, 11)
 	env = track_env.reset()
