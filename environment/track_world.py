@@ -54,8 +54,8 @@ class Track_Env():
 
 		return self.env
 
-
-	def move_obj(self, action): # '0' = y + 1, '1' = x - 1, '2' = y - 1, '3' = x + 1
+	# '0' = down, '1' = left, '2' = up, '3' = right
+	def move_obj(self, action):
 		penalty = 0
 		racer = self.objs[0]
 		offset_x, offset_y = 0, 0

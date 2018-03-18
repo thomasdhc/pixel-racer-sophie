@@ -26,6 +26,7 @@ class FeedForwardNetwork():
         self.trainer = tf.train.GradientDescentOptimizer(learning_rate=lr)
         self.update_model = self.trainer.minimize(self.loss)
 
+
 def train_model(env, reshape_type, lr):
     tf.reset_default_graph()
     ffn = FeedForwardNetwork(121, 4, lr)
@@ -45,7 +46,7 @@ def train_model(env, reshape_type, lr):
         
             state_map = env.reset()
             state = util.reshape_state(state_map, ENV_WIDTH, reshape_type)
-            reward_all = 0
+            reward_all = 0.
             action_all = []
             loss_total = 0.
             done = False
@@ -82,30 +83,45 @@ def train_model(env, reshape_type, lr):
                 if step == 98:
                     print("For " + str(i) + " could not reach goal")
 
-            if i == 0:
+            if i % 2 == 0:
                 action_list.append(action_all)
-            elif i == 10:
-                action_list.append(action_all)
-            elif i == 20:
-                action_list.append(action_all)
-            elif i == 40:
-                action_list.append(action_all)
-
             reward_list.append(reward_all)
             loss_list.append(loss_total)
+        test(sess, ffn, reshape_type)
+
     return action_list, reward_list, loss_list, num_episodes
 
 
-def main():
+def test(sess, ffn, reshape_type):
+    test_env = Track_Env(ENV_WIDTH, ENV_HEIGHT)
+    state_org = test_env.reset()
+    test_actions = [2, 3, 0, 3, 2, 3, 0, 3, 2, 3, 0, 3, 2, 2, 3, 3, 2, 1, 2, 3, 2, 1, 2, 1 ,2, 2, 1, 0, 1, 2, 1]
+    print(state_org)
+    print('\n')
+    for action in test_actions:
+        state_map, _, _ = test_env.tick(action)
+        state = util.reshape_state(state_map, ENV_WIDTH, reshape_type)
+        act, all_q = sess.run([ffn.predict, ffn.q_out], feed_dict={ffn.in_var: state})
+        print(action)
+        print(state_map)
+        print(all_q)
+        print(act)
+        print('\n')
+
+
+def run():
     env = Track_Env(ENV_WIDTH, ENV_HEIGHT)
     a_list, r_list, l_list, num_ep = train_model(env, 'identity', 0.1)
     count = 0
     for action_array in a_list:
         np.savetxt(RESULT_PATH + '/q_nn_actions_{}.txt'.format(str(count)), action_array, fmt='%d')
         count += 1
-    
-    print("Percent of sucessful episodes: " + str(sum(r_list)/num_ep)+ "%")
-    # np.savetxt(RESULT_PATH + '/loss_array.txt', l_list, fmt='%d')
+
+    success = 0
+    for r in r_list:
+        if r == 1.:
+            success += 1
+    print("Percent of successful episodes: " + str(success/num_ep * 100)+ "%")
     plt.plot(l_list)
     plt.show()
 
