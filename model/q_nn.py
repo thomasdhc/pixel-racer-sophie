@@ -58,7 +58,7 @@ def train_model(env, reshape_type, lr):
                 action, all_q = sess.run([ffn.predict, ffn.q_out], feed_dict={ffn.in_var: state})
 
                 if np.random.rand(1) < e:
-                    action[0] = np.random.randint(0, 3)
+                    action[0] = np.random.randint(0, 4)
 
                 state_map1, reward, done = env.tick(action[0])
                 state1 = util.reshape_state(state_map1, ENV_WIDTH, reshape_type)
