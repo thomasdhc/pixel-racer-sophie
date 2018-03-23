@@ -66,7 +66,7 @@ def train_q_table(env):
     return reward_list, action_list, num_episodes, q_table
 
 
-def main():
+def run():
     env = Track_Env(ENV_WIDTH, ENV_HEIGHT)
     reward_list, action_list, num_episodes, q_table = train_q_table(env)
     count = 0

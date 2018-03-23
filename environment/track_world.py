@@ -73,7 +73,7 @@ class Track_Env():
 			racer.x = racer.x + offset_x
 			racer.y = racer.y + offset_y
 		else:
-			penalty = -1 
+			penalty = 0 
 
 		self.objs[0] = racer
 
