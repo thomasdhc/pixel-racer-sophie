@@ -30,10 +30,11 @@ class FeedForwardNetwork():
     
 # Learning parameters 
 DISCOUNT_FACTOR = 0.99
-NUM_EP = 2000
-START_E = 1
+NUM_EP = 10000
+ANNEALING_STEP = 10000.
+START_E = 1.
 END_E = 0.1
-RDC_E = (START_E - END_E) / NUM_EP
+RDC_E = (START_E - END_E) / ANNEALING_STEP
 
 PRE_TRAIN_STEPS = 1000
 BUFFER_SIZE = 500
@@ -41,6 +42,21 @@ BUFFER_SIZE = 500
 RESHAPE_TYPE = 'array'
 
 LEARNING_RATE = 0.01
+# Rate to update target network toward primary network
+TAU = 0.1
+
+
+def update_target_graph(tf_vars, tau):
+    num_vars = len(tf_vars)
+    op_holder = []
+    for idx, var in enumerate(tf_vars[0:num_vars//2]):
+        op_holder.append(tf_vars[idx + num_vars//2].assign((var.value() * tau) + ((1 - tau) * tf_vars[idx + num_vars//2].value())))
+    return op_holder
+
+
+def update_target(op_holder, sess):
+    for op in op_holder:
+        sess.run(op)
 
 
 def generate_episode(e, total_steps, env, sess, main_ffn, state):
@@ -52,7 +68,7 @@ def generate_episode(e, total_steps, env, sess, main_ffn, state):
     state_map1, reward, done = env.tick(action[0])
     state1 = util.reshape_state(state_map1, ENV_WIDTH, RESHAPE_TYPE)
 
-    return np.reshape(np.array([state, action, reward, state1, done]), [1, 5]), state1
+    return np.reshape(np.array([state, action, reward, state1, done]), [1, 5]), state1, done
 
 
 def update_model(train_buffer, sess, main_ffn, target_ffn):
@@ -67,6 +83,7 @@ def update_model(train_buffer, sess, main_ffn, target_ffn):
     target_q[0, train_batch[1]] = train_batch[2] + DISCOUNT_FACTOR * max_q1
 
     loss, _ = sess.run([main_ffn.loss, main_ffn.update_model], feed_dict={main_ffn.in_var: train_batch[0], main_ffn.q_next:target_q})
+
     return loss
 
 
@@ -78,6 +95,9 @@ def train_model(env):
 
     main_ffn = FeedForwardNetwork(121, 4, LEARNING_RATE)
     target_ffn = FeedForwardNetwork(121, 4, LEARNING_RATE)
+
+    train_var = tf.trainable_variables()
+    target_ops = update_target_graph(train_var, TAU)
 
     train_buffer = ExperienceBuffer(BUFFER_SIZE)
 
@@ -95,10 +115,10 @@ def train_model(env):
             loss_total = 0.
             step = 0
 
-            while step < 99:
+            while step < 50:
                 step += 1
 
-                ep_list, state1 = generate_episode(e, total_steps, env, sess, main_ffn, state)
+                ep_list, state1, done = generate_episode(e, total_steps, env, sess, main_ffn, state)
                 total_steps += 1
                 episode_buffer.add(ep_list)
 
@@ -107,15 +127,18 @@ def train_model(env):
                         e -= RDC_E
 
                     loss = update_model(train_buffer, sess, main_ffn, target_ffn)
+                    update_target(target_ops, sess)
                     loss_total += loss
 
                 state = state1 
+                if done:
+                    break
 
             train_buffer.add(episode_buffer.buffer)
             loss_list.append(loss_total)
             print(f"Training step {str(i)} complete!") 
         test(sess, main_ffn)
-
+        store_nn_actions(sess, main_ffn)
     return loss_list
 
 
@@ -134,6 +157,24 @@ def test(sess, ffn):
         print(all_q)
         print(act)
         print('\n')
+
+
+def store_nn_actions(sess, ffn):
+    test_env = Track_Env(ENV_WIDTH, ENV_HEIGHT)
+    state_map = test_env.reset()
+    state = util.reshape_state(state_map, ENV_WIDTH, RESHAPE_TYPE)
+    step = 0
+    action_array = []
+    while step < 99:
+        step += 1
+        action = sess.run(ffn.predict, feed_dict={ffn.in_var: state})
+        action_array.append(action)
+        state_map, _, done = test_env.tick(action)
+        state = util.reshape_state(state_map, ENV_WIDTH, RESHAPE_TYPE)
+        if done:
+            break
+
+    np.savetxt(RESULT_PATH + '/buffer_q_nn.txt', action_array, fmt='%d')
 
 
 def run():
