@@ -36,8 +36,8 @@ START_E = 1.
 END_E = 0.1
 RDC_E = (START_E - END_E) / ANNEALING_STEP
 
-PRE_TRAIN_STEPS = 1000
-BUFFER_SIZE = 500
+PRE_TRAIN_STEPS = 10000
+BUFFER_SIZE = 5000
 
 RESHAPE_TYPE = 'array'
 
@@ -115,7 +115,7 @@ def train_model(env):
             loss_total = 0.
             step = 0
 
-            while step < 50:
+            while step < 99:
                 step += 1
 
                 ep_list, state1, done = generate_episode(e, total_steps, env, sess, main_ffn, state)
