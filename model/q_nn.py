@@ -4,7 +4,7 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-from environment.track_world import Track_Env
+from environment.track_world import TrackEnv
 from model import util
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +32,7 @@ def train_model(env, reshape_type, lr):
     ffn = FeedForwardNetwork(121, 4, lr)
     init = tf.global_variables_initializer()
 
-    # Learning parameters 
+    # Learning parameters
     y = 0.99
     e = 0.1
     num_episodes = 1000
@@ -43,7 +43,7 @@ def train_model(env, reshape_type, lr):
     with tf.Session() as sess:
         sess.run(init)
         for i in range(num_episodes):
-        
+
             state_map = env.reset()
             state = util.reshape_state(state_map, ENV_WIDTH, reshape_type)
             reward_all = 0.
@@ -93,9 +93,9 @@ def train_model(env, reshape_type, lr):
 
 
 def test(sess, ffn, reshape_type):
-    test_env = Track_Env(ENV_WIDTH, ENV_HEIGHT)
+    test_env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
     state_org = test_env.reset()
-    test_actions = [2, 3, 0, 3, 2, 3, 0, 3, 2, 3, 0, 3, 2, 2, 3, 3, 2, 1, 2, 3, 2, 1, 2, 1 ,2, 2, 1, 0, 1, 2, 1]
+    test_actions = [2, 3, 0, 3, 2, 3, 0, 3, 2, 3, 0, 3, 2, 2, 3, 3, 2, 1, 2, 3, 2, 1, 2, 1, 2, 2, 1, 0, 1, 2, 1]
     print(state_org)
     print('\n')
     for action in test_actions:
@@ -110,7 +110,7 @@ def test(sess, ffn, reshape_type):
 
 
 def run():
-    env = Track_Env(ENV_WIDTH, ENV_HEIGHT)
+    env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
     a_list, r_list, l_list, num_ep = train_model(env, 'identity', 0.1)
     count = 0
     for action_array in a_list:
