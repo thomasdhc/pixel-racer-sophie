@@ -35,7 +35,7 @@ def train_model(env, reshape_type, lr):
     # Learning parameters
     y = 0.99
     e = 0.1
-    num_episodes = 1000
+    num_episodes = 500
 
     action_list = []
     reward_list = []
@@ -83,7 +83,13 @@ def train_model(env, reshape_type, lr):
                 if step == 98:
                     print("For " + str(i) + " could not reach goal")
 
-            if i % 2 == 0:
+            # if i % 2 == 0:
+            #     action_list.append(action_all)
+            if i == 0:
+                action_list.append(action_all)
+            elif i == 54:
+                action_list.append(action_all)
+            elif i == 499:
                 action_list.append(action_all)
             reward_list.append(reward_all)
             loss_list.append(loss_total)
