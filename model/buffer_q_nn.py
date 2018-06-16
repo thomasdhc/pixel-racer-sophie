@@ -55,11 +55,6 @@ def update_target_graph(tf_vars):
     return op_holder
 
 
-def update_target(op_holder, sess):
-    for op in op_holder:
-        sess.run(op)
-
-
 def generate_episode(e, total_steps, env, sess, main_ffn, state):
     if np.random.rand(1) < e or total_steps < PRE_TRAIN_STEPS:
         action = [np.random.randint(0, 4)]
@@ -87,6 +82,10 @@ def update_model(train_buffer, sess, main_ffn, target_ffn):
                        feed_dict={main_ffn.in_var: train_batch[0], main_ffn.q_next:target_q})
 
     return loss
+
+def update_target(op_holder, sess):
+    for op in op_holder:
+        sess.run(op)
 
 
 def train_model(env):

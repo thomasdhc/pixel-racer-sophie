@@ -13,3 +13,10 @@ __pycache__/
 
 # VS Code
 .vscode
+
+# Pipefile
+Pipfile
+Pipfile.lock
+
+# results folder
+model_results/
