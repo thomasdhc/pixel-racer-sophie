@@ -19,4 +19,4 @@ Pipfile
 Pipfile.lock
 
 # results folder
-model_results/
+model_action_output/

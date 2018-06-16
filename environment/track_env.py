@@ -6,10 +6,11 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 import environment.entity as e
+import environment.helper as helper
 from environment.entity import Coord
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-RESULT_PATH = ROOT_DIR + '/../model_results'
+RESULT_PATH = ROOT_DIR + '/../model_action_output'
 
 class TrackEnv():
     def __init__(self, size_x, size_y):
@@ -18,36 +19,25 @@ class TrackEnv():
         self.env = np.zeros([self.size_y, self.size_x])
         self.reset()
 
-
     def reset(self):
-        self.walls = []
-        self.objs = []
-
-        self.walls.append(e.Line_Wall(Coord(0, 10), Coord(6, 10)))
-        self.walls.append(e.Line_Wall(Coord(0, 7), Coord(6, 7)))
-        self.walls.append(e.Line_Wall(Coord(0, 7), Coord(0, 10)))
-        self.walls.append(e.Line_Wall(Coord(3, 3), Coord(5, 3)))
-        self.walls.append(e.Line_Wall(Coord(3, 0), Coord(5, 0)))
-        self.walls.append(e.Line_Wall(Coord(3, 0), Coord(3, 3)))
-        self.walls.append(e.Half_Circle_Wall(Coord(5, 5), 5, 'e'))
-        self.walls.append(e.Half_Circle_Wall(Coord(5, 5), 2, 'e'))
-
-        self.objs.append(e.Race_Car(Coord(1, 9)))
-
+        self.walls, self.objs, self.goal = helper.generate_track_from_file()
         return self.render_env()
 
 
-    #In array creation the x and y must be flipped to reflect in the graph
+    # In array creation the x and y must be flipped to reflect in the graph
     def render_env(self):
         self.env = np.zeros([self.size_y, self.size_x])
+
+        # Walls
         for wall in self.walls:
             for location in wall.get_wall_pixel_locations():
                 self.env[location.y, location.x] = 1
 
-        #Goal
-        self.env[1, 4] = 0.25
-        self.env[2, 4] = 0.25
+        # Goal
+        for coord in self.goal.coordinates:
+            self.env[coord.y, coord.x] = 0.25
 
+        # Objects
         for obj in self.objs:
             self.env[obj.y, obj.x] = 0.5
 
@@ -57,17 +47,11 @@ class TrackEnv():
     def move_obj(self, action):
         penalty = 0
         racer = self.objs[0]
-        offset_x, offset_y = 0, 0
 
-        if action == 0:
-            offset_y = 1
-        elif action == 1:
-            offset_x = -1
-        elif action == 2:
-            offset_y = -1
-        elif action == 3:
-            offset_x = 1
+        offset_map = {0: (0, 1), 1: (-1, 0), 2: (0, -1), 3: (1, 0)}
+        offset_x, offset_y = offset_map[action]
 
+        # Remember to flip the y and x coordinates when indexing into 2D array
         if self.env[racer.y + offset_y, racer.x + offset_x] != 1:
             racer.x = racer.x + offset_x
             racer.y = racer.y + offset_y

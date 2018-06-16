@@ -74,10 +74,10 @@ To train the models for yourself:
 ```
 python -m model.q_nn run
 ```
-On completion you will be presented with a loss graph and the final training actions will be stored in the model_results folder.
+On completion you will be presented with a loss graph and the final training actions will be stored in the model_action_output folder.
 You can view your racer's actions by running:
 ```
-python -m environment.track_world run <name_of_action_file>
+python -m environment.track_env run <name_of_action_file>
 ```
 This will generate an animation of your racer's actions on the track.
 Feel free to build your own tracks by modifying the track world file and train your racer on the new track.

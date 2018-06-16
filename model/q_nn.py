@@ -4,11 +4,11 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-from environment.track_world import TrackEnv
+from environment.track_env import TrackEnv
 from model import util
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-RESULT_PATH = ROOT_DIR + '/../model_results'
+RESULT_PATH = ROOT_DIR + '/../model_action_output'
 
 ENV_WIDTH = 11
 ENV_HEIGHT = 11
@@ -83,8 +83,6 @@ def train_model(env, reshape_type, lr):
                 if step == 98:
                     print("For " + str(i) + " could not reach goal")
 
-            # if i % 2 == 0:
-            #     action_list.append(action_all)
             if i == 0:
                 action_list.append(action_all)
             elif i == 54:

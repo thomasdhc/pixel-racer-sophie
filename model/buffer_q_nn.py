@@ -4,12 +4,12 @@ import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
-from environment.track_world import TrackEnv
+from environment.track_env import TrackEnv
 from model.experience_buffer import ExperienceBuffer
 from model import util
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-RESULT_PATH = ROOT_DIR + '/../model_results'
+RESULT_PATH = ROOT_DIR + '/../model_action_output'
 
 ENV_WIDTH = 11
 ENV_HEIGHT = 11
