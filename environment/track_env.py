@@ -2,8 +2,6 @@ import os
 
 import fire
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 
 import environment.entity as e
 import environment.helper as helper
@@ -82,36 +80,3 @@ class TrackEnv():
         self.render_env()
 
         return self.env, (reward + penalty), done
-
-
-def run(filename, show_result=True):
-
-    fig = plt.figure()
-
-    action_list = np.loadtxt(RESULT_PATH + '/' + filename, dtype=int)
-    run.num_action = 0
-    track_env = TrackEnv(11, 11)
-    env = track_env.reset()
-    im = plt.imshow(env, animated='True')
-
-    def update_fig(self):
-        if run.num_action == 0:
-            new_env = track_env.reset()
-            im.set_array(new_env)
-        else:
-            new_env, _, _ = track_env.tick(action_list[run.num_action - 2])
-            im.set_array(new_env)
-        run.num_action += 1
-        return im,
-
-    ani = animation.FuncAnimation(fig, update_fig, frames=len(action_list) + 1, interval=150, blit=False, repeat=False)
-    if show_result:
-        plt.show()
-    else:
-        ani.save(ROOT_DIR + '/../gifs/' + filename[:-4] + '.gif', writer='imagemagick', fps=7)
-
-
-if __name__ == '__main__':
-    fire.Fire({
-        'run': run
-    })

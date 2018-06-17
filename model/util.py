@@ -1,4 +1,8 @@
+import os, argparse
+
 import numpy as np
+
+import tensorflow as tf
 
 def reshape_state(state, dim, type='val'):
     if type == 'val':

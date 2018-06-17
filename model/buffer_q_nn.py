@@ -2,7 +2,6 @@ import os
 import fire
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
 
 from environment.track_env import TrackEnv
 from model.experience_buffer import ExperienceBuffer
@@ -60,7 +59,7 @@ def generate_episode(e, total_steps, env, sess, main_ffn, state):
     if np.random.rand(1) < e or total_steps < PRE_TRAIN_STEPS:
         action = [np.random.randint(0, 4)]
     else:
-        action = sess.run([main_ffn.predict], feed_dict={main_ffn.in_var: state})
+        action = sess.run(main_ffn.predict, feed_dict={main_ffn.in_var: state})
 
     state_map1, reward, done = env.tick(action[0])
     state1 = util.reshape_state(state_map1, ENV_WIDTH, RESHAPE_TYPE)
@@ -174,7 +173,7 @@ def store_final_nn_actions(sess, ffn):
         step += 1
         action = sess.run(ffn.predict, feed_dict={ffn.in_var: state})
         action_array.append(action)
-        state_map, _, done = test_env.tick(action)
+        state_map, _, done = test_env.tick(action[0])
         state = util.reshape_state(state_map, ENV_WIDTH, RESHAPE_TYPE)
         if done:
             break
@@ -185,9 +184,7 @@ def store_final_nn_actions(sess, ffn):
 def run():
     env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
     l_list = train_model(env)
-
-    plt.plot(l_list)
-    plt.show()
+    np.savetxt(RESULT_PATH + '/buffer_q_nn_loss.txt', l_list, fmt='%f')
 
 
 if __name__ == '__main__':

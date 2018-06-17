@@ -130,8 +130,7 @@ def run():
         if r == 1.:
             success += 1
     print("Percent of successful episodes: " + str(success/num_ep * 100)+ "%")
-    plt.plot(l_list)
-    plt.show()
+    np.savetxt(RESULT_PATH + '/q_nn_loss.txt', l_list, fmt='%f')
 
 
 if __name__ == '__main__':
