@@ -10,6 +10,7 @@ from model import util
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULT_PATH = ROOT_DIR + '/../model_action_output'
+MODEL_PATH = ROOT_DIR + '/../model_results'
 
 ENV_WIDTH = 11
 ENV_HEIGHT = 11
@@ -100,6 +101,8 @@ def train_model(env):
     train_var = tf.trainable_variables()
     target_ops = update_target_graph(train_var)
 
+    saver = tf.train.Saver()
+
     train_buffer = ExperienceBuffer(BUFFER_SIZE)
 
     loss_list = []
@@ -140,6 +143,7 @@ def train_model(env):
             print(f"Training step {str(i)} complete!")
         test(sess, main_ffn)
         store_final_nn_actions(sess, main_ffn)
+        saver.save(sess, MODEL_PATH + '/buffer-qnn-model-' + str(NUM_EP) + '.ckpt')
     return loss_list
 
 

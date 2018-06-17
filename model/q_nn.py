@@ -9,6 +9,7 @@ from model import util
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULT_PATH = ROOT_DIR + '/../model_action_output'
+MODEL_PATH = ROOT_DIR + '/../model_results'
 
 ENV_WIDTH = 11
 ENV_HEIGHT = 11
@@ -32,10 +33,12 @@ def train_model(env, reshape_type, lr):
     ffn = FeedForwardNetwork(121, 4, lr)
     init = tf.global_variables_initializer()
 
+    saver = tf.train.Saver()
+
     # Learning parameters
     y = 0.99
     e = 0.1
-    num_episodes = 500
+    num_episodes = 1000
 
     action_list = []
     reward_list = []
@@ -92,6 +95,7 @@ def train_model(env, reshape_type, lr):
             reward_list.append(reward_all)
             loss_list.append(loss_total)
         test(sess, ffn, reshape_type)
+        saver.save(sess, MODEL_PATH + '/qnn-model-' + str(num_episodes) + '.ckpt')
 
     return action_list, reward_list, loss_list, num_episodes
 
