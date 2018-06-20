@@ -26,8 +26,8 @@ def run_ckpt(model_dir, meta_graph):
 
     # Retrieve tensors, operations, collections, etc.
     x = graph.get_tensor_by_name('input:0')
-    weights = graph.get_tensor_by_name('weights:0')
-    y_weight = graph.get_tensor_by_name('matmul_output:0')
+    weights = graph.get_tensor_by_name('w1:0')
+    y_weight = graph.get_tensor_by_name('output_w:0')
     y = graph.get_tensor_by_name('output:0')
 
     with tf.Session() as sess:

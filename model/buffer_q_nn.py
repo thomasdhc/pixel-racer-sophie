@@ -9,7 +9,7 @@ from model import util
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULT_PATH = ROOT_DIR + '/../model_action_output'
-MODEL_PATH = ROOT_DIR + '/../model_results'
+MODEL_PATH = ROOT_DIR + '/../model_results_buff_qnn'
 
 ENV_WIDTH = 11
 ENV_HEIGHT = 11
@@ -17,10 +17,10 @@ ENV_HEIGHT = 11
 # Feed-forward network
 class FeedForwardNetwork():
     def __init__(self, input_size, out_size, lr):
-        self.in_var = tf.placeholder(shape=[1, input_size], dtype=tf.float32)
-        self.weights = tf.Variable(tf.random_uniform([input_size, out_size], 0, 0.01))
-        self.q_out = tf.matmul(self.in_var, self.weights)
-        self.predict = tf.argmax(self.q_out, 1)
+        self.in_var = tf.placeholder(shape=[1, input_size], dtype=tf.float32, name="input")
+        self.weights = tf.Variable(tf.random_uniform([input_size, out_size], 0, 0.01), name="w1")
+        self.q_out = tf.matmul(self.in_var, self.weights, name="output_w")
+        self.predict = tf.argmax(self.q_out, 1, name="output")
 
         self.q_next = tf.placeholder(shape=[1, out_size], dtype=tf.float32)
         self.loss = tf.reduce_sum(tf.square(self.q_next - self.q_out))
@@ -139,7 +139,8 @@ def train_model(env):
 
             train_buffer.add(episode_buffer.buffer)
             loss_list.append(loss_total)
-            print(f"Training step {str(i)} complete!")
+            if i % 500 == 0:
+                print(f"Training step {str(i)} complete!")
         test(sess, main_ffn)
         store_final_nn_actions(sess, main_ffn)
         saver.save(sess, MODEL_PATH + '/buffer-qnn-model-' + str(NUM_EP) + '.ckpt')
@@ -147,20 +148,22 @@ def train_model(env):
 
 
 def test(sess, ffn):
-    test_env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
-    state_org = test_env.reset()
-    test_actions = [2, 3, 0, 3, 2, 3, 0, 3, 2, 3, 0, 3, 2, 2, 3, 3, 2, 1, 2, 3, 2, 1, 2, 1, 2, 2, 1, 0, 1, 2, 1]
-    print(state_org)
-    print('\n')
-    for action in test_actions:
-        state_map, _, _ = test_env.tick(action)
+    step = 0
+    action_list = []
+    track_env = TrackEnv(11, 11)
+    state_map = track_env.reset()
+
+    while step < 22:
+
         state = util.reshape_state(state_map, ENV_WIDTH, RESHAPE_TYPE)
-        act, all_q = sess.run([ffn.predict, ffn.q_out], feed_dict={ffn.in_var: state})
-        print(action)
-        print(state_map)
+        act, all_q = sess.run([ffn.predict, ffn.q_out], feed_dict={ffn.in_var:state})
         print(all_q)
-        print(act)
-        print('\n')
+        action_list.append(act[0])
+        state_map, _, done = track_env.tick(act[0])
+        if done:
+            break
+        step += 1
+    print(action_list)
 
 
 def store_final_nn_actions(sess, ffn):
