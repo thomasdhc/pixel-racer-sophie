@@ -14,10 +14,10 @@ ENV_WIDTH = 11
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__)) + "/../"
 
-def run_ckpt():
+def run_ckpt(model_dir, meta_graph):
     # Restoring Graph
     # This function returns a Saver
-    saver = tf.train.import_meta_graph('/Users/DongHyuk/Documents/pixel-racer-sophie/model_results/qnn-model-1000.ckpt.meta')
+    saver = tf.train.import_meta_graph(model_dir + '/' + meta_graph)
 
     # We can access the default graph where all our metadata has been loaded
     graph = tf.get_default_graph()
@@ -31,22 +31,25 @@ def run_ckpt():
     y = graph.get_tensor_by_name('output:0')
 
     with tf.Session() as sess:
-        ckpt = tf.train.get_checkpoint_state('/Users/DongHyuk/Documents/pixel-racer-sophie/model_results')
+        ckpt = tf.train.get_checkpoint_state(model_dir)
         saver.restore(sess, ckpt.model_checkpoint_path)
+
         step = 0
         action_list = []
         track_env = TrackEnv(11, 11)
         state_map = track_env.reset()
 
+        w = sess.run(weights)
+        print(w)
         while step < 22:
 
             state = util.reshape_state(state_map, ENV_WIDTH, RESHAPE_TYPE)
-            y_out, weight = sess.run([y, y_weight], feed_dict={x:state})
-            print(weight)
+            y_out, y_arr = sess.run([y, y_weight], feed_dict={x:state})
+            print(y_arr)
+            y_out = sess.run(y, feed_dict={x:state})
             action_list.append(y_out[0])
             state_map, _, done = track_env.tick(y_out[0])
-            if done:
-                break
+            if done: break
             step += 1
 
         print(action_list)
@@ -58,8 +61,8 @@ def run_frozen_model(file_path):
     for op in graph.get_operations():
         print(op.name)
 
-    x = graph.get_tensor_by_name('prefix/Placeholder:0')
-    y = graph.get_tensor_by_name('prefix/ArgMax:0')
+    x = graph.get_tensor_by_name('prefix/input:0')
+    y = graph.get_tensor_by_name('prefix/output:0')
 
     with tf.Session(graph=graph) as sess:
         step = 0

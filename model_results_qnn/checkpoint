@@ -1,2 +1,2 @@
-model_checkpoint_path: "/Users/DongHyuk/Documents/pixel-racer-sophie/model/../model_results/qnn-model-1000.ckpt"
-all_model_checkpoint_paths: "/Users/DongHyuk/Documents/pixel-racer-sophie/model/../model_results/qnn-model-1000.ckpt"
+model_checkpoint_path: "/Users/DongHyuk/Documents/pixel-racer-sophie/model/../model_results_qnn/qnn-model-1000.ckpt"
+all_model_checkpoint_paths: "/Users/DongHyuk/Documents/pixel-racer-sophie/model/../model_results_qnn/qnn-model-1000.ckpt"
