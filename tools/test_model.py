@@ -1,8 +1,6 @@
 import os
 import fire
 
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 import tensorflow as tf
 
 import model.util as util
@@ -73,9 +71,9 @@ def run_frozen_model(file_path):
         while step < 22:
 
             state = util.reshape_state(state_map, ENV_WIDTH, RESHAPE_TYPE)
-            y_out = sess.run(y, feed_dict={x:state})
-            action_list.append(y_out[0])
-            state_map, _, done = track_env.tick(y_out[0])
+            act = sess.run(y, feed_dict={x:state})
+            action_list.append(act[0])
+            state_map, _, done = track_env.tick(act[0])
             if done:
                 break
             step += 1

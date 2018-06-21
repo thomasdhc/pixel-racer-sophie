@@ -1,0 +1,2 @@
+model_checkpoint_path: "/root/pixel-racer-sophie/model/../model_results_buff_qnn/buffer-qnn-model-20000.ckpt"
+all_model_checkpoint_paths: "/root/pixel-racer-sophie/model/../model_results_buff_qnn/buffer-qnn-model-20000.ckpt"

@@ -30,7 +30,7 @@ class FeedForwardNetwork():
 
 # Learning parameters
 DISCOUNT_FACTOR = 0.99
-NUM_EP = 10000
+NUM_EP = 20000
 ANNEALING_STEP = 10000.
 START_E = 1.
 END_E = 0.1
@@ -82,6 +82,7 @@ def update_model(train_buffer, sess, main_ffn, target_ffn):
                        feed_dict={main_ffn.in_var: train_batch[0], main_ffn.q_next:target_q})
 
     return loss
+
 
 def update_target(op_holder, sess):
     for op in op_holder:
