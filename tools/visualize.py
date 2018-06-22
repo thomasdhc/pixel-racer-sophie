@@ -16,13 +16,20 @@ def loss_graph(filename):
     plt.show()
 
 
+def track():
+    track_env = TrackEnv(11, 11)
+    env = track_env.reset()
+    _ = plt.imshow(env, origin='lower')
+    plt.show()
+
+
 def generate_animation(filename):
     fig = plt.figure()
     action_list = np.loadtxt(RESULT_PATH + '/' + filename, dtype=int)
     save_gif.num_action = 0
     track_env = TrackEnv(11, 11)
     env = track_env.reset()
-    im = plt.imshow(env, animated='True')
+    im = plt.imshow(env, animated='True', origin='lower')
 
     def update_fig(self):
         if save_gif.num_action == 0:
@@ -52,5 +59,6 @@ if __name__ == '__main__':
     fire.Fire({
         'loss': loss_graph,
         'gif' : save_gif,
+        'track' : track,
         'action' : model_action
     })
