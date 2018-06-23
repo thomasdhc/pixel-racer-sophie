@@ -6,7 +6,7 @@ from environment.entity import Coord
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def generate_track_from_file():
-    track_file = open(ROOT_DIR + "/track1.txt", "r")
+    track_file = open(ROOT_DIR + "/unique-track/track1.txt", "r")
     count = int(track_file.readline())
     walls = []
     objs = []

@@ -60,10 +60,10 @@ class Line_Wall(Wall):
 
 
 class Half_Circle_Wall(Wall):
-    def __init__(self, center, radius, qudrant):
+    def __init__(self, center, radius, quadrant):
         self.center = center
         self.radius = radius
-        self.qudrant = qudrant
+        self.quadrant = quadrant
         Wall.type = Wall_Type.HALF_CIRCLE
 
 
@@ -111,13 +111,13 @@ class Half_Circle_Wall(Wall):
                 third_quadrant.append(Coord(-y + self.center.x, -x + self.center.y))
                 fourth_quadrant.append(Coord(y + self.center.x, -x + self.center.y))
 
-        if self.qudrant == 'e':
+        if self.quadrant == 'e':
             pixel_locations = first_quadrant + fourth_quadrant
-        elif self.qudrant == 'n':
+        elif self.quadrant == 'n':
             pixel_locations = first_quadrant + second_quadrant
-        elif self.qudrant == 'w':
+        elif self.quadrant == 'w':
             pixel_locations = second_quadrant + third_quadrant
-        elif self.qudrant == 's':
+        elif self.quadrant == 's':
             pixel_locations = third_quadrant + fourth_quadrant
 
         return pixel_locations
