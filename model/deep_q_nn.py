@@ -70,9 +70,9 @@ class ConvolutionalNetwork():
 
 
 # Learning parameters
-BATCH_SIZE = 32
+BATCH_SIZE = 16
 DISCOUNT_FACTOR = 0.99
-NUM_EP = 20000
+NUM_EP = 10000
 ANNEALING_STEP = 10000.
 START_E = 1.
 END_E = 0.1
@@ -83,9 +83,9 @@ BUFFER_SIZE = 50000
 
 RESHAPE_TYPE = 'array'
 
-LEARNING_RATE = 0.01
+LEARNING_RATE = 0.0001
 # Rate to update target network toward primary network
-TAU = 0.0001
+TAU = 0.001
 
 
 def update_target_graph(tf_vars):
@@ -162,7 +162,7 @@ def train_model(env):
             loss_total = 0.
             step = 0
 
-            while step < 99:
+            while step < 39:
                 step += 1
 
                 ep_list, state1, done = generate_episode(e, total_steps, env, sess, main_ffn, state)
