@@ -18,7 +18,7 @@ ENV_HEIGHT = 11
 
 class ConvolutionalNetwork():
     def __init__(self, h_size, lr):
-        self.flat_input =  tf.placeholder(shape=[None,121],dtype=tf.float32)
+        self.flat_input =  tf.placeholder(shape=[None,121], dtype=tf.float32, name="input")
         self.input_layer = tf.reshape(self.flat_input, shape=[-1,11,11,1])
         self.conv1 = slim.conv2d( \
             inputs=self.input_layer, \
@@ -56,7 +56,7 @@ class ConvolutionalNetwork():
         self.val = tf.matmul(self.val_stream, self.val_weights)
 
         self.q_out = self.val + tf.subtract(self.adv, tf.reduce_mean(self.adv, axis=1, keepdims=True))
-        self.predict = tf.argmax(self.q_out, 1)
+        self.predict = tf.argmax(self.q_out, 1, name="output")
 
         self.target_q = tf.placeholder(shape=[None], dtype=tf.float32)
         self.actions = tf.placeholder(shape=[None], dtype=tf.int32)

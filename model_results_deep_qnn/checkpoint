@@ -1,0 +1,2 @@
+model_checkpoint_path: "/root/pixel-racer-sophie/model/../model_results_deep_qnn/deep-qnn-model-10000.ckpt"
+all_model_checkpoint_paths: "/root/pixel-racer-sophie/model/../model_results_deep_qnn/deep-qnn-model-10000.ckpt"
