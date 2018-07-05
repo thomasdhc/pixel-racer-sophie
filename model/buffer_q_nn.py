@@ -151,7 +151,7 @@ def train_model(env):
 def test(sess, ffn):
     step = 0
     action_list = []
-    track_env = TrackEnv(11, 11)
+    track_env = TrackEnv(11, 11, "track1")
     state_map = track_env.reset()
 
     while step < 22:
@@ -168,7 +168,7 @@ def test(sess, ffn):
 
 
 def store_final_nn_actions(sess, ffn):
-    test_env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
+    test_env = TrackEnv(ENV_WIDTH, ENV_HEIGHT, "track1")
     state_map = test_env.reset()
     state = util.reshape_state(state_map, ENV_WIDTH, RESHAPE_TYPE)
     step = 0
@@ -186,7 +186,7 @@ def store_final_nn_actions(sess, ffn):
 
 
 def run():
-    env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
+    env = TrackEnv(ENV_WIDTH, ENV_HEIGHT, "track1")
     l_list = train_model(env)
     np.savetxt(RESULT_PATH + '/buffer_q_nn_loss.txt', l_list, fmt='%f')
 

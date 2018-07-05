@@ -67,7 +67,7 @@ def train_q_table(env):
 
 
 def run():
-    env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
+    env = TrackEnv(ENV_WIDTH, ENV_HEIGHT, "track1")
     reward_list, action_list, num_episodes, q_table = train_q_table(env)
     count = 0
     for l in action_list:

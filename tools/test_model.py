@@ -30,11 +30,11 @@ def run_ckpt(model_dir, meta_graph):
 
     with tf.Session() as sess:
         ckpt = tf.train.get_checkpoint_state(model_dir)
-        saver.restore(sess, ckpt.model_checkpoint_path)
+        saver.restore(sess, ckpt.model_checkpoint_path) #pylint: disable=E1101
 
         step = 0
         action_list = []
-        track_env = TrackEnv(11, 11)
+        track_env = TrackEnv(11, 11, "track1")
         state_map = track_env.reset()
 
         w = sess.run(weights)
@@ -65,7 +65,7 @@ def run_frozen_model(file_path):
     with tf.Session(graph=graph) as sess:
         step = 0
         action_list = []
-        track_env = TrackEnv(11, 11)
+        track_env = TrackEnv(11, 11, "track1")
         state_map = track_env.reset()
 
         while step < 22:

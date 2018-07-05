@@ -11,14 +11,15 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 RESULT_PATH = ROOT_DIR + '/../model_action_output'
 
 class TrackEnv():
-    def __init__(self, size_x, size_y):
+    def __init__(self, size_x, size_y, track_name):
+        self.track_name = track_name
         self.size_x = size_x
         self.size_y = size_y
         self.env = np.zeros([self.size_y, self.size_x])
         self.reset()
 
     def reset(self):
-        self.walls, self.objs, self.goal = helper.generate_track_from_file()
+        self.walls, self.objs, self.goal = helper.generate_track_from_file(self.track_name)
         return self.render_env()
 
 

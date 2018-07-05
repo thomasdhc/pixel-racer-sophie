@@ -16,8 +16,8 @@ def loss_graph(filename):
     plt.show()
 
 
-def track():
-    track_env = TrackEnv(11, 11)
+def track(track_name):
+    track_env = TrackEnv(11, 11, track_name)
     env = track_env.reset()
     _ = plt.imshow(env, origin='lower')
     plt.show()
@@ -27,7 +27,7 @@ def generate_animation(filename):
     fig = plt.figure()
     action_list = np.loadtxt(RESULT_PATH + '/' + filename, dtype=int)
     save_gif.num_action = 0
-    track_env = TrackEnv(11, 11)
+    track_env = TrackEnv(11, 11, "track1")
     env = track_env.reset()
     im = plt.imshow(env, animated='True', origin='lower')
 

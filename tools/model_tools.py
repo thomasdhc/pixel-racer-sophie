@@ -25,7 +25,7 @@ def freeze_graph(model_dir, output_node_names):
 
     # We retrieve our checkpoint fullpath
     checkpoint = tf.train.get_checkpoint_state(model_dir)
-    input_checkpoint = checkpoint.model_checkpoint_path
+    input_checkpoint = checkpoint.model_checkpoint_path #pylint: disable=E1101
 
     # We precise the file fullname of our freezed graph
     absolute_model_dir = "/".join(input_checkpoint.split('/')[:-1])
@@ -52,7 +52,7 @@ def freeze_graph(model_dir, output_node_names):
         # Finally we serialize and dump the output graph to the filesystem
         with tf.gfile.GFile(output_graph, "wb") as f:
             f.write(output_graph_def.SerializeToString())
-        print("%d ops in the final graph." % len(output_graph_def.node))
+        print("%d ops in the final graph." % len(output_graph_def.node)) #pylint: disable=E1101
 
     return output_graph_def
 

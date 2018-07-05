@@ -104,7 +104,7 @@ def train_model(env, reshape_type, lr):
 def test(sess, ffn, reshape_type):
     step = 0
     action_list = []
-    track_env = TrackEnv(11, 11)
+    track_env = TrackEnv(11, 11, "track1")
     state_map = track_env.reset()
 
     while step < 22:
@@ -121,7 +121,7 @@ def test(sess, ffn, reshape_type):
 
 
 def run():
-    env = TrackEnv(ENV_WIDTH, ENV_HEIGHT)
+    env = TrackEnv(ENV_WIDTH, ENV_HEIGHT, "track1")
     a_list, r_list, l_list, num_ep = train_model(env, 'identity', 0.1)
     count = 0
     for action_array in a_list:
